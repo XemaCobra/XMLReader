@@ -18,8 +18,10 @@ typedef NSUInteger XMLReaderOptions;
 @interface XMLReader : NSObject <NSXMLParserDelegate>
 
 + (NSDictionary *)dictionaryForXMLData:(NSData *)data error:(NSError **)errorPointer;
++ (NSDictionary *)dictionaryForXMLParser:(NSXMLParser *)parser error:(NSError **)error;
 + (NSDictionary *)dictionaryForXMLString:(NSString *)string error:(NSError **)errorPointer;
 + (NSDictionary *)dictionaryForXMLData:(NSData *)data options:(XMLReaderOptions)options error:(NSError **)errorPointer;
++ (NSDictionary *)dictionaryForXMLParser:(NSXMLParser *)parser options:(XMLReaderOptions)options error:(NSError **)error;
 + (NSDictionary *)dictionaryForXMLString:(NSString *)string options:(XMLReaderOptions)options error:(NSError **)errorPointer;
 
 @end

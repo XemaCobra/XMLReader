@@ -35,6 +35,11 @@ NSString *const kXMLReaderAttributePrefix	= @"@";
     return rootDictionary;
 }
 
++ (NSDictionary *)dictionaryForXMLParser:(NSXMLParser *)parser error:(NSError **)error {
+    XMLReader *reader = [[XMLReader alloc] initWithError:error];
+    return [reader objectWithParser:parser options:0];
+}
+
 + (NSDictionary *)dictionaryForXMLString:(NSString *)string error:(NSError **)error
 {
     NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
@@ -46,6 +51,12 @@ NSString *const kXMLReaderAttributePrefix	= @"@";
     XMLReader *reader = [[XMLReader alloc] initWithError:error];
     NSDictionary *rootDictionary = [reader objectWithData:data options:options];
     return rootDictionary;
+}
+
++ (NSDictionary *)dictionaryForXMLParser:(NSXMLParser *)parser options:(XMLReaderOptions)options error:(NSError **)error
+{
+    XMLReader *reader = [[XMLReader alloc] initWithError:error];
+    return [reader objectWithParser:parser options:options];
 }
 
 + (NSDictionary *)dictionaryForXMLString:(NSString *)string options:(XMLReaderOptions)options error:(NSError **)error
@@ -69,6 +80,13 @@ NSString *const kXMLReaderAttributePrefix	= @"@";
 
 - (NSDictionary *)objectWithData:(NSData *)data options:(XMLReaderOptions)options
 {
+    // Parse the XML
+    NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
+    return [self objectWithParser:parser options:options];
+}
+
+- (NSDictionary *)objectWithParser:(NSXMLParser *)parser options:(XMLReaderOptions)options
+{
     // Clear out any old data
     self.dictionaryStack = [[NSMutableArray alloc] init];
     self.textInProgress = [[NSMutableString alloc] init];
@@ -76,9 +94,7 @@ NSString *const kXMLReaderAttributePrefix	= @"@";
     // Initialize the stack with a fresh dictionary
     [self.dictionaryStack addObject:[NSMutableDictionary dictionary]];
     
-    // Parse the XML
-    NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
-    
+    // Parse the XML    
     [parser setShouldProcessNamespaces:(options & XMLReaderOptionsProcessNamespaces)];
     [parser setShouldReportNamespacePrefixes:(options & XMLReaderOptionsReportNamespacePrefixes)];
     [parser setShouldResolveExternalEntities:(options & XMLReaderOptionsResolveExternalEntities)];
@@ -95,7 +111,6 @@ NSString *const kXMLReaderAttributePrefix	= @"@";
     
     return nil;
 }
-
 
 #pragma mark -  NSXMLParserDelegate methods
 
